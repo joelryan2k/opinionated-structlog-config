@@ -3,6 +3,14 @@ import structlog
 def configure_app_for_structlog(middleware: list[str]):
     middleware.append("django_structlog.middlewares.RequestMiddleware")
 
+    timestamper = structlog.processors.TimeStamper(fmt="iso")
+
+    pre_chain = [
+        timestamper,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.ExtraAdder(),
+    ]
+
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
@@ -34,6 +42,7 @@ def configure_app_for_structlog(middleware: list[str]):
             "json_formatter": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.processors.JSONRenderer(),
+                "foreign_pre_chain": pre_chain,
             }
         },
         "handlers": {
