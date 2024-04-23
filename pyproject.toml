@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "django-structlog-config"
+name = "opinionated-structlog-config"
 version = "0.1.0"
 description = ""
 authors = ["Joel Ryan <joel@iwcenter.com>"]
