@@ -29,7 +29,7 @@ def is_running_in_container():
     with open('/proc/self/cgroup', 'r') as fh:
         file_contents = fh.read()
 
-        return 'containerd' in file_contents or 'docker' in file_contents
+        return 'containerd' in file_contents or 'docker' in file_contents or '/ecs/' in file_contents
 
 def build_formatter(force_json_output = False):
     pre_chain = [
