@@ -1,49 +1,15 @@
-import structlog
+from .common import configure_structlog, build_formatter
 
 def configure_app_for_structlog(middleware: list[str]):
     middleware.append("django_structlog.middlewares.RequestMiddleware")
 
-    timestamper = structlog.processors.TimeStamper(fmt="iso")
-
-    pre_chain = [
-        timestamper,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.ExtraAdder(),
-    ]
-
-    structlog.configure(
-        processors=[
-            structlog.contextvars.merge_contextvars,
-            structlog.stdlib.filter_by_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.stdlib.PositionalArgumentsFormatter(),
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.processors.UnicodeDecoder(),
-            structlog.processors.CallsiteParameterAdder(
-                {
-                    structlog.processors.CallsiteParameter.FILENAME,
-                    structlog.processors.CallsiteParameter.FUNC_NAME,
-                    structlog.processors.CallsiteParameter.LINENO,
-                }
-            ),
-            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-        ],
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        cache_logger_on_first_use=True,
-    )
+    configure_structlog()
 
     return {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "json_formatter": {
-                "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.processors.JSONRenderer(),
-                "foreign_pre_chain": pre_chain,
-            }
+            "json_formatter": build_formatter()
         },
         "handlers": {
             "mail_admins": {
