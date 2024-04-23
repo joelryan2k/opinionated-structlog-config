@@ -4,7 +4,7 @@ import structlog
 timestamper = structlog.processors.TimeStamper(fmt="iso")
 
 
-def configure_structlog():
+def common_configure_structlog():
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
