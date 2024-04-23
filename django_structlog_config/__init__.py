@@ -7,7 +7,7 @@ def configure_app_for_structlog(middleware: list[str]):
 
     return {
         "version": 1,
-        "disable_existing_loggers": False,
+        "disable_existing_loggers": True,
         "formatters": {
             "console_formatter": build_formatter()
         },
