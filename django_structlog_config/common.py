@@ -33,8 +33,11 @@ def is_running_in_container():
 
 def build_formatter():
     pre_chain = [
+        structlog.contextvars.merge_contextvars,
         timestamper,
+        structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
+        structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.stdlib.ExtraAdder(),
     ]
 
