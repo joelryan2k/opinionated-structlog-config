@@ -4,7 +4,7 @@ settings.py
 
 ```
 import opinionated_structlog_config
-LOGGING = opinionated_structlog_config.configure_for_structlog(MIDDLEWARE)
+opinionated_structlog_config.configure_for_structlog(MIDDLEWARE)
 ```
 # Django
 
