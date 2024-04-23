@@ -31,7 +31,7 @@ def is_running_in_container():
 
         return 'containerd' in file_contents or 'docker' in file_contents
 
-def build_formatter():
+def build_formatter(force_json_output = False):
     pre_chain = [
         structlog.contextvars.merge_contextvars,
         timestamper,
@@ -41,7 +41,7 @@ def build_formatter():
         structlog.stdlib.ExtraAdder(),
     ]
 
-    if is_running_in_container():
+    if force_json_output or is_running_in_container():
         processor = structlog.processors.JSONRenderer()
     else:
         processor = structlog.dev.ConsoleRenderer()
