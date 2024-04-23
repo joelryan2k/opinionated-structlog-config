@@ -9,7 +9,7 @@ def configure_app_for_structlog(middleware: list[str]):
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "json_formatter": build_formatter()
+            "console_formatter": build_formatter()
         },
         "handlers": {
             "mail_admins": {
@@ -19,7 +19,7 @@ def configure_app_for_structlog(middleware: list[str]):
             },
             "console": {
                 "level": "DEBUG",
-                "formatter": "json_formatter",
+                "formatter": "console_formatter",
                 "class": "logging.StreamHandler",
             },
         },

@@ -19,12 +19,12 @@ def receiver_setup_logging(loglevel, logfile, format, colorize, **kwargs):  # pr
            "version": 1,
            "disable_existing_loggers": False,
            "formatters": {
-               "json_formatter": build_formatter(),
+               "console_formatter": build_formatter(),
            },
            "handlers": {
                "console": {
                    "class": "logging.StreamHandler",
-                   "formatter": "json_formatter",
+                   "formatter": "console_formatter",
                },
            },
             "root": {
