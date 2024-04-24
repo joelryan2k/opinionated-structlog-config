@@ -12,7 +12,7 @@ settings.py
 
 ```
 import opinionated_structlog_config.django
-LOGGING = opinionated_structlog_config.configure_django_for_structlog(MIDDLEWARE)
+LOGGING = opinionated_structlog_config.django.configure_django_for_structlog(MIDDLEWARE)
 ```
 
 # Celery
