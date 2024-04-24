@@ -26,6 +26,9 @@ def is_running_in_container():
     if not os.path.exists('/proc/self/cgroup'):
         return False
     
+    if os.environ.get('STRUCTLOG_JSON'):
+        return True
+    
     with open('/proc/self/cgroup', 'r') as fh:
         file_contents = fh.read()
 
