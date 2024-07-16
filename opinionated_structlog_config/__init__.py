@@ -1,9 +1,11 @@
 import logging
 import logging.config
+import typing
+
 from .common import common_configure_structlog, build_formatter
 
-def configure_for_structlog(force_json_output = False):
-    common_configure_structlog()
+def configure_for_structlog(force_json_output = False, config: typing.Union[None, dict] = None):
+    common_configure_structlog(config or {})
 
     logging.config.dictConfig({
         "version": 1,

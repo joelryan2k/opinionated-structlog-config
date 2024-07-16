@@ -14,22 +14,14 @@ def is_sentry_installed():
         return False
 
 
-def is_django_installed():
-    try:
-        import django # type: ignore
-        return True
-    except ImportError:
-        return False
-
-def _configure_sentry():
-    if not is_django_installed():
-        raise Exception("Currently django is required to support sentry. This can be adjusted, it's just not ready yet.")
+def _configure_sentry(config: dict):
+    if not 'SENTRY' in config:
+        return
 
     import sentry_sdk
     from sentry_sdk.integrations.logging import LoggingIntegration
 
-    from django.conf import settings
-    sentry_config = settings.OPINIONATED_STRUCTLOG_CONFIG['SENTRY']
+    sentry_config = config['SENTRY']
 
     dsn = sentry_config['DSN']
     sentry_options = sentry_config.get('OPTIONS', {})
@@ -45,13 +37,13 @@ def _configure_sentry():
         **sentry_options,
     )
 
-def common_configure_structlog():
+def common_configure_structlog(config: dict):
     sentry_processors = []
 
     if is_sentry_installed():
         from structlog_sentry import SentryProcessor
         sentry_processors.append(SentryProcessor(event_level=logging.ERROR))
-        _configure_sentry()
+        _configure_sentry(config)
 
     structlog.configure(
         processors=[

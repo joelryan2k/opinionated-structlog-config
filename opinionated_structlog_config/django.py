@@ -1,9 +1,11 @@
+import typing
+
 from .common import common_configure_structlog, build_formatter, is_sentry_installed
 
-def configure_django_for_structlog(middleware: list[str]):
+def configure_django_for_structlog(middleware: list[str], config: typing.Union[dict, None] = None):
     middleware.append("django_structlog.middlewares.RequestMiddleware")
 
-    common_configure_structlog()
+    common_configure_structlog(config or {})
 
     loggers = {}
 
