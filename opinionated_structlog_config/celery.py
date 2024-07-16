@@ -4,6 +4,7 @@ from django.dispatch import receiver
 import structlog
 from celery.signals import setup_logging
 from django_structlog.celery import signals
+from django.conf import settings
 
 from django_structlog.celery.steps import DjangoStructLogInitStep
 
@@ -34,7 +35,7 @@ def receiver_setup_logging(loglevel, logfile, format, colorize, **kwargs):  # pr
        }
     )
 
-    common_configure_structlog()
+    common_configure_structlog(config=settings.OPINIONATED_STRUCTLOG_CONFIG)
 
 @receiver(signals.bind_extra_task_metadata)
 def receiver_bind_extra_request_metadata(sender, signal, task=None, logger=None, **kwargs):

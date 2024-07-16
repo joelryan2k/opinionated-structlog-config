@@ -1,10 +1,50 @@
 import os
 import structlog
+import logging
 
 timestamper = structlog.processors.TimeStamper(fmt="iso")
 
 
-def common_configure_structlog():
+def is_sentry_installed():
+    try:
+        import sentry_sdk # type: ignore
+        import structlog_sentry # type: ignore
+        return True
+    except ImportError:
+        return False
+
+
+def _configure_sentry(config: dict):
+    if not 'SENTRY' in config:
+        return
+
+    import sentry_sdk
+    from sentry_sdk.integrations.logging import LoggingIntegration
+
+    sentry_config = config['SENTRY']
+
+    dsn = sentry_config['DSN']
+    sentry_options = sentry_config.get('OPTIONS', {})
+
+    sentry_sdk.init(
+        dsn=dsn,
+        integrations=[
+            LoggingIntegration(
+                level=None,
+                event_level=None,
+            ),
+        ],
+        **sentry_options,
+    )
+
+def common_configure_structlog(config: dict):
+    sentry_processors = []
+
+    if is_sentry_installed():
+        from structlog_sentry import SentryProcessor
+        sentry_processors.append(SentryProcessor(event_level=logging.ERROR))
+        _configure_sentry(config)
+
     structlog.configure(
         processors=[
             structlog.contextvars.merge_contextvars,
@@ -12,6 +52,7 @@ def common_configure_structlog():
             timestamper,
             structlog.stdlib.add_logger_name,
             structlog.stdlib.add_log_level,
+        ] + sentry_processors + [
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
