@@ -1,4 +1,4 @@
-from .common import common_configure_structlog, build_formatter, is_sentry_enabled
+from .common import common_configure_structlog, build_formatter, is_sentry_installed
 
 def configure_django_for_structlog(middleware: list[str]):
     middleware.append("django_structlog.middlewares.RequestMiddleware")
@@ -7,7 +7,7 @@ def configure_django_for_structlog(middleware: list[str]):
 
     loggers = {}
 
-    if not is_sentry_enabled():
+    if not is_sentry_installed():
         loggers['django.request'] = {
             "handlers": ["mail_admins"],
             "level": "ERROR",

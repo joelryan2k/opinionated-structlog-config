@@ -5,7 +5,7 @@ import logging
 timestamper = structlog.processors.TimeStamper(fmt="iso")
 
 
-def is_sentry_enabled():
+def is_sentry_installed():
     try:
         import sentry_sdk # type: ignore
         import structlog_sentry # type: ignore
@@ -14,12 +14,44 @@ def is_sentry_enabled():
         return False
 
 
+def is_django_installed():
+    try:
+        import django # type: ignore
+        return True
+    except ImportError:
+        return False
+
+def _configure_sentry():
+    if not is_django_installed():
+        raise Exception("Currently django is required to support sentry. This can be adjusted, it's just not ready yet.")
+
+    import sentry_sdk
+    from sentry_sdk.integrations.logging import LoggingIntegration
+
+    from django.conf import settings
+    sentry_config = settings.OPINIONATED_STRUCTLOG_CONFIG['SENTRY']
+
+    dsn = sentry_config['DSN']
+    sentry_options = sentry_config.get('OPTIONS', {})
+
+    sentry_sdk.init(
+        dsn=dsn,
+        integrations=[
+            LoggingIntegration(
+                level=None,
+                event_level=None,
+            ),
+        ],
+        **sentry_options,
+    )
+
 def common_configure_structlog():
     sentry_processors = []
 
-    if is_sentry_enabled():
+    if is_sentry_installed():
         from structlog_sentry import SentryProcessor
         sentry_processors.append(SentryProcessor(event_level=logging.ERROR))
+        _configure_sentry()
 
     structlog.configure(
         processors=[
