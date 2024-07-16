@@ -9,9 +9,12 @@ readme = "README.md"
 python = "^3.8"
 structlog = "^24.1.0"
 django-structlog = { version = "^8.0.0", optional = true}
+structlog-sentry = { version = "^2.1.0", optional = true}
+sentry-sdk = { version = "^2.10.0", optional = true}
 
 [tool.poetry.extras]
 django = ["django-structlog"]
+sentry = ["structlog-sentry", "sentry-sdk"]
 
 [build-system]
 requires = ["poetry-core"]

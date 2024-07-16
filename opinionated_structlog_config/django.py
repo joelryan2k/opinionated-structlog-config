@@ -1,9 +1,18 @@
-from .common import common_configure_structlog, build_formatter
+from .common import common_configure_structlog, build_formatter, is_sentry_enabled
 
 def configure_django_for_structlog(middleware: list[str]):
     middleware.append("django_structlog.middlewares.RequestMiddleware")
 
     common_configure_structlog()
+
+    loggers = {}
+
+    if not is_sentry_enabled():
+        loggers['django.request'] = {
+            "handlers": ["mail_admins"],
+            "level": "ERROR",
+            "propagate": True,
+        }
 
     return {
         "version": 1,
@@ -23,13 +32,7 @@ def configure_django_for_structlog(middleware: list[str]):
                 "class": "logging.StreamHandler",
             },
         },
-        "loggers": {
-            "django.request": {
-                "handlers": ["mail_admins"],
-                "level": "ERROR",
-                "propagate": True,
-            },
-        },
+        "loggers": loggers,
         "filters": {
             "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}
         },
