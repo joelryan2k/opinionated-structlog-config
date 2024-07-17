@@ -1,6 +1,6 @@
 import typing
 
-from .common import common_configure_structlog, build_formatter, is_sentry_installed
+from .common import common_configure_structlog, build_formatter
 
 def configure_django_for_structlog(middleware: list[str], config: typing.Union[dict, None] = None):
     middleware.append("django_structlog.middlewares.RequestMiddleware")
@@ -9,7 +9,7 @@ def configure_django_for_structlog(middleware: list[str], config: typing.Union[d
 
     loggers = {}
 
-    if not is_sentry_installed():
+    if config == None or 'SENTRY' not in config:
         loggers['django.request'] = {
             "handlers": ["mail_admins"],
             "level": "ERROR",

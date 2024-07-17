@@ -5,19 +5,7 @@ import logging
 timestamper = structlog.processors.TimeStamper(fmt="iso")
 
 
-def is_sentry_installed():
-    try:
-        import sentry_sdk # type: ignore
-        import structlog_sentry # type: ignore
-        return True
-    except ImportError:
-        return False
-
-
 def _configure_sentry(config: dict):
-    if not 'SENTRY' in config:
-        return
-
     import sentry_sdk
     from sentry_sdk.integrations.logging import LoggingIntegration
 
@@ -40,7 +28,7 @@ def _configure_sentry(config: dict):
 def common_configure_structlog(config: dict):
     sentry_processors = []
 
-    if is_sentry_installed():
+    if 'SENTRY' in config:
         from structlog_sentry import SentryProcessor
         sentry_processors.append(SentryProcessor(event_level=logging.ERROR))
         _configure_sentry(config)
