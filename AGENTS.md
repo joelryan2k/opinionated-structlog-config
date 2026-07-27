@@ -11,12 +11,14 @@ This file provides guidance to agents when working with code in this repository.
 Poetry-managed project, run through [devbox](https://www.jetify.com/devbox). Dependencies live in `pyproject.toml` / `poetry.lock`; the toolchain (Python, Poetry) is pinned in `devbox.json`. Preface every command with `devbox run` so it executes inside the devbox environment.
 
 ```bash
-devbox run poetry install --all-extras   # install with django + sentry extras
-devbox run poetry run pytest             # run the test suite
-devbox run poetry run pytest tests/test_main.py::test_name   # run a single test
+devbox run poetry install --all-extras --with dev   # extras + test tooling (pytest, celery)
+devbox run poetry run pytest                         # run the test suite
+devbox run poetry run pytest tests/test_django.py::test_configure_appends_middleware_and_returns_logging   # run a single test
 ```
 
-The optional extras (`django`, `sentry`) gate the heavy dependencies. Code that touches `django.py`, `celery.py`, or the Sentry branch of `common.py` only imports those packages lazily/inside functions, so the base install stays light — preserve that pattern when editing.
+The test suite lives in `tests/` and needs the `dev` group (pytest, pytest-django) plus every extra installed; `pytest-django` is pointed at `tests.settings` via `[tool.pytest.ini_options]`.
+
+The optional extras (`django`, `sentry`, `celery`) gate the heavy dependencies. Code that touches `django.py` or the Sentry branch of `common.py` only imports those packages lazily/inside functions, so the base install stays light — preserve that pattern when editing. (`celery.py` is the exception: it imports `celery`/`django_structlog.celery`/`django.conf.settings` at module level, so it requires the `celery` extra to import at all.)
 
 ## Architecture
 
