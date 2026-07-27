@@ -8,12 +8,12 @@ This file provides guidance to agents when working with code in this repository.
 
 ## Commands
 
-Poetry-managed project. Dependencies live in `pyproject.toml` / `poetry.lock`.
+Poetry-managed project, run through [devbox](https://www.jetify.com/devbox). Dependencies live in `pyproject.toml` / `poetry.lock`; the toolchain (Python, Poetry) is pinned in `devbox.json`. Preface every command with `devbox run` so it executes inside the devbox environment.
 
 ```bash
-poetry install --all-extras   # install with django + sentry extras
-poetry run pytest             # run the test suite
-poetry run pytest tests/test_main.py::test_name   # run a single test
+devbox run poetry install --all-extras   # install with django + sentry extras
+devbox run poetry run pytest             # run the test suite
+devbox run poetry run pytest tests/test_main.py::test_name   # run a single test
 ```
 
 The optional extras (`django`, `sentry`) gate the heavy dependencies. Code that touches `django.py`, `celery.py`, or the Sentry branch of `common.py` only imports those packages lazily/inside functions, so the base install stays light — preserve that pattern when editing.
