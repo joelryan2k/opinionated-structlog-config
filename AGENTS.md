@@ -20,6 +20,14 @@ The test suite lives in `tests/` and needs the `dev` group (pytest, pytest-djang
 
 The optional extras (`django`, `sentry`, `celery`) gate the heavy dependencies. Code that touches `django.py` or the Sentry branch of `common.py` only imports those packages lazily/inside functions, so the base install stays light — preserve that pattern when editing. (`celery.py` is the exception: it imports `celery`/`django_structlog.celery`/`django.conf.settings` at module level, so it requires the `celery` extra to import at all.)
 
+## Releasing & versioning
+
+For any change that affects consumers (skip for tests/CI/internal-docs-only changes), do all three:
+
+1. Bump `version` in `pyproject.toml` per [SemVer](https://semver.org/). Pre-1.0: breaking → minor (`0.2.0` → `0.3.0`), otherwise patch (`0.2.0` → `0.2.1`).
+2. Add a `## [x.y.z] - YYYY-MM-DD` section to the top of `CHANGELOG.md` ([Keep a Changelog](https://keepachangelog.com/) format), plus the `[x.y.z]: .../releases/tag/vx.y.z` link at the bottom. Prefix breaking changes with `BREAKING:` and state the required consumer action.
+3. Tag and push: `git tag vX.Y.Z && git push origin main --tags`.
+
 ## Architecture
 
 Three entry points, one shared core. Every public function funnels through `common.py`, which owns the actual structlog processor chain and the console-vs-JSON formatter decision.

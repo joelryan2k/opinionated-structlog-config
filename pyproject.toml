@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "opinionated-structlog-config"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 authors = ["Joel Ryan <joel@iwcenter.com>"]
 readme = "README.md"
+repository = "https://github.com/joelryan2k/opinionated-structlog-config"
 
 [tool.poetry.dependencies]
 python = "^3.8"
