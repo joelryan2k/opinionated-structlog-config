@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "opinionated-structlog-config"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 authors = ["Joel Ryan <joel@iwcenter.com>"]
 readme = "README.md"

@@ -111,3 +111,26 @@ def test_sentry_branch_inits_sdk_and_adds_processor():
 
     names = [type(p).__name__ for p in structlog.get_config()["processors"]]
     assert "SentryProcessor" in names
+
+
+def test_sentry_defaults_include_local_variables_to_false():
+    config = {"SENTRY": {"DSN": "https://public@example.ingest.sentry.io/1"}}
+    with mock.patch("sentry_sdk.init") as init:
+        common.common_configure_structlog(config)
+
+    _, kwargs = init.call_args
+    assert kwargs["include_local_variables"] is False
+
+
+def test_sentry_options_can_override_include_local_variables():
+    config = {
+        "SENTRY": {
+            "DSN": "https://public@example.ingest.sentry.io/1",
+            "OPTIONS": {"include_local_variables": True},
+        }
+    }
+    with mock.patch("sentry_sdk.init") as init:
+        common.common_configure_structlog(config)
+
+    _, kwargs = init.call_args
+    assert kwargs["include_local_variables"] is True

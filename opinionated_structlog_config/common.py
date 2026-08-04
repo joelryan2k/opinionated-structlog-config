@@ -22,7 +22,7 @@ def _configure_sentry(config: dict):
                 event_level=None,
             ),
         ],
-        **sentry_options,
+        **{'include_local_variables': False, **sentry_options},
     )
 
 def common_configure_structlog(config: dict):

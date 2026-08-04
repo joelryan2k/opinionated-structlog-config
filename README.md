@@ -37,5 +37,9 @@ OPINIONATED_STRUCTLOG_CONFIG = {
     }
 }
 
+# Anything in OPTIONS is passed straight to sentry_sdk.init(). Sentry defaults to
+# include_local_variables=False here; override it in OPTIONS if you want locals
+# attached to stack frames.
+
 import opinionated_structlog_config.django
 LOGGING = opinionated_structlog_config.django.configure_django_for_structlog(MIDDLEWARE, config=OPINIONATED_STRUCTLOG_CONFIG)
